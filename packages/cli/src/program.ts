@@ -56,11 +56,7 @@ export function createProgram(io: CliIo) {
     .description(`Validate and normalize a new ${productName} project request`)
     .option("--config <path>", "load defaults from a JSON configuration file")
     .option("--destination <path>", "target directory")
-    .addOption(
-      new Option("--sdk <version>", "Expo SDK version").choices(
-        supportedSdks.map(String),
-      ),
-    )
+    .addOption(new Option("--sdk <version>", "Expo SDK version").choices(supportedSdks.map(String)))
     .addOption(new Option("--structure <type>").choices([...structures]))
     .addOption(new Option("--package-manager <name>").choices([...packageManagers]))
     .addOption(new Option("--navigation <adapter>").choices([...navigationAdapters]))

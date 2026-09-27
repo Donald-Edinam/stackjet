@@ -203,7 +203,7 @@ export function normalizeNonInteractiveCreate(
     install: flags.install ?? effectiveConfig.install ?? true,
     git: flags.git ?? effectiveConfig.git ?? true,
     typescript: flags.typescript ?? effectiveConfig.typescript ?? true,
-    sdk: flags.sdk ? Number(flags.sdk) : effectiveConfig.sdk ?? 57,
+    sdk: flags.sdk ? Number(flags.sdk) : (effectiveConfig.sdk ?? 57),
   });
 }
 

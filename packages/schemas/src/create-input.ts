@@ -179,8 +179,7 @@ export const createInputSchema = createInputObjectSchema
       context.addIssue({
         code: "custom",
         path: ["navigation"],
-        message:
-          `Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK ${input.sdk}`,
+        message: `Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK ${input.sdk}`,
       });
     }
   });

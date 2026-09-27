@@ -452,9 +452,10 @@ export function useMe() {
 }
 `;
 
-const readme = `# ${productName} app
+function makeReadme(sdk: number) {
+  return `# ${productName} app
 
-Expo SDK 57 mobile app with modern authentication and a typed API.
+Expo SDK ${sdk} mobile app with modern authentication and a typed API.
 
 ## Configure environment variables
 
@@ -470,6 +471,7 @@ For Supabase email OTP, enable Email under Authentication → Sign In / Provider
 
 See docs/deployment.md for production deployment and secret handling.
 `;
+}
 
 const deployment = `# Deployment
 
@@ -540,7 +542,7 @@ export const monorepoPlatformAdapter: Adapter = {
           '{"$schema":"https://turbo.build/schema.json","tasks":{"build":{"dependsOn":["^build"],"outputs":[".next/**","!.next/cache/**","dist/**"]},"dev":{"cache":false,"persistent":true},"typecheck":{"dependsOn":["^typecheck"]},"test":{"dependsOn":["^test"]}}}\n',
         owner: this.id,
       },
-      { type: "write-file", path: "README.md", content: readme, owner: this.id },
+      { type: "write-file", path: "README.md", content: makeReadme(input.sdk), owner: this.id },
       {
         type: "write-file",
         path: "AGENTS.md",

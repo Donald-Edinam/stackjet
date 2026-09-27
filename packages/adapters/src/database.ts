@@ -2,6 +2,7 @@ import type { Operation } from "@expojet/core";
 import type { DatabaseAdapter } from "@expojet/schemas";
 import { z } from "zod";
 import type { Adapter } from "./contract.js";
+import { sdkVersion } from "./versions.js";
 
 const noOptions = z.object({}).strict();
 
@@ -164,7 +165,7 @@ export const sqliteDatabaseAdapter: Adapter = {
           type: "add-dependency",
           workspace: ".",
           name: "expo-sqlite",
-          version: "~57.0.3",
+          version: sdkVersion(input.sdk, "expo-sqlite"),
           kind: "dependencies",
           owner: this.id,
         },

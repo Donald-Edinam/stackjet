@@ -3,6 +3,7 @@ import type { Operation } from "@expojet/core";
 import type { CreateInput } from "@expojet/schemas";
 import { z } from "zod";
 import type { Adapter } from "./contract.js";
+import { sdkVersion } from "./versions.js";
 
 const noOptions = z.object({}).strict();
 const brandTitle = productName.toUpperCase();
@@ -307,7 +308,7 @@ export const clerkAuthAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-auth-session",
-        version: "~57.0.12",
+        version: sdkVersion(input.sdk, "expo-auth-session"),
         kind: "dependencies",
         owner: this.id,
       },
@@ -315,7 +316,7 @@ export const clerkAuthAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-crypto",
-        version: "~57.0.3",
+        version: sdkVersion(input.sdk, "expo-crypto"),
         kind: "dependencies",
         owner: this.id,
       },
@@ -323,7 +324,7 @@ export const clerkAuthAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-web-browser",
-        version: "~57.0.3",
+        version: sdkVersion(input.sdk, "expo-web-browser"),
         kind: "dependencies",
         owner: this.id,
       },

@@ -2,6 +2,7 @@ import type { Operation } from "@expojet/core";
 import type { CreateInput } from "@expojet/schemas";
 import { z } from "zod";
 import type { Adapter } from "./contract.js";
+import { sdkVersion } from "./versions.js";
 
 const noOptions = z.object({}).strict();
 
@@ -82,7 +83,7 @@ export const hapticsAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-haptics",
-        version: "~57.0.3",
+        version: sdkVersion(input.sdk, "expo-haptics"),
         kind: "dependencies",
         owner: this.id,
       },

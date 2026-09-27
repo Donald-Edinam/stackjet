@@ -1149,7 +1149,7 @@ describe("Phase 2 generation", () => {
         false,
       ),
     ).toThrow(
-      "Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK 57",
+      "Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK",
     );
   });
 
@@ -1538,5 +1538,120 @@ describe("Phase 2 generation", () => {
     const checks = runDoctorChecks(project);
     const hapticsCheck = checks.find((c) => c.name === "Tactile haptics engine");
     expect(hapticsCheck).toBeUndefined();
+  });
+});
+
+function sdk58Input(destination: string): CreateInput {
+  return { ...input(destination), sdk: 58 };
+}
+
+describe("SDK 58 generation", () => {
+  it("generates a standalone SDK 58 app with correct dependencies and manifest", () => {
+    const destination = join(mkdtempSync(join(tmpdir(), "expojet-sdk58-standalone-")), "sdk58-app");
+    const result = generateCreatePlan(sdk58Input(destination), false);
+    expect(result.committed).toBe(true);
+
+    const pkg = JSON.parse(readFileSync(join(destination, "package.json"), "utf8"));
+    expect(pkg.dependencies.expo).toMatch(/^~58\./);
+    expect(pkg.dependencies["expo-router"]).toMatch(/^~58\./);
+    expect(pkg.dependencies.expo).not.toMatch(/^~57\./);
+
+    const manifest = JSON.parse(readFileSync(join(destination, "expojet.jsonc"), "utf8"));
+    expect(manifest.sdk).toBe(58);
+    expect(manifest.sdkPackSha256).toMatch(/^[a-f0-9]{64}$/);
+
+    const project = loadProjectContext(destination);
+    expect(project).not.toBeNull();
+    const checks = runDoctorChecks(project);
+    const sdkCheck = checks.find((c) => c.name === "Expo SDK pack");
+    expect(sdkCheck?.status).toBe("pass");
+  });
+
+  it("generates a SDK 58 monorepo with React Navigation and Clerk", () => {
+    const destination = join(mkdtempSync(join(tmpdir(), "expojet-sdk58-mono-")), "sdk58-mono");
+    const result = generateCreatePlan(
+      {
+        ...sdk58Input(destination),
+        structure: "monorepo",
+        navigation: "react-navigation",
+        auth: "clerk",
+      },
+      false,
+    );
+    expect(result.committed).toBe(true);
+
+    const project = loadProjectContext(destination);
+    expect(project).not.toBeNull();
+    expect(project?.manifest.sdk).toBe(58);
+    expect(project?.manifest.adapters.navigation).toBe("react-navigation");
+
+    const checks = runDoctorChecks(project);
+    const sdkCheck = checks.find((c) => c.name === "Expo SDK pack");
+    expect(sdkCheck?.status).toBe("pass");
+    const secretCheck = checks.find((c) => c.name === "Mobile secret boundary");
+    expect(secretCheck?.status).toBe("pass");
+
+    const readme = readFileSync(join(destination, "README.md"), "utf8");
+    expect(readme).toContain("SDK 58");
+    expect(readme).not.toContain("SDK 57");
+  });
+
+  it("SDK 58 dry run preserves the selected SDK without writing files", () => {
+    const destination = join(mkdtempSync(join(tmpdir(), "expojet-sdk58-dry-")), "sdk58-dry");
+    const result = generateCreatePlan(sdk58Input(destination), true);
+    expect(result.committed).toBe(false);
+    expect(result.files).toContain("app/index.tsx");
+    expect(existsSync(destination)).toBe(false);
+  });
+
+  it("SDK 58 adapter dependency versions differ from SDK 57", () => {
+    const plan57 = buildCreatePlan({
+      ...input("unused"),
+      haptics: true,
+      liquidGlass: true,
+    });
+    const plan58 = buildCreatePlan({
+      ...sdk58Input("unused"),
+      haptics: true,
+      liquidGlass: true,
+    });
+
+    const haptics57 = plan57.operations.find(
+      (op) => op.type === "add-dependency" && op.name === "expo-haptics",
+    );
+    const haptics58 = plan58.operations.find(
+      (op) => op.type === "add-dependency" && op.name === "expo-haptics",
+    );
+    expect(haptics57).toBeDefined();
+    expect(haptics58).toBeDefined();
+    if (haptics57?.type === "add-dependency" && haptics58?.type === "add-dependency") {
+      expect(haptics57.version).toMatch(/^~57\./);
+      expect(haptics58.version).toMatch(/^~58\./);
+    }
+
+    const glass57 = plan57.operations.find(
+      (op) => op.type === "add-dependency" && op.name === "expo-glass-effect",
+    );
+    const glass58 = plan58.operations.find(
+      (op) => op.type === "add-dependency" && op.name === "expo-glass-effect",
+    );
+    if (glass57?.type === "add-dependency" && glass58?.type === "add-dependency") {
+      expect(glass57.version).toMatch(/^~57\./);
+      expect(glass58.version).toMatch(/^~58\./);
+    }
+  });
+
+  it("SDK 58 and SDK 57 packs produce different owner tags and checksums", () => {
+    const plan57 = buildCreatePlan(input("unused"));
+    const plan58 = buildCreatePlan(sdk58Input("unused"));
+
+    const owners57 = new Set(plan57.operations.map((op) => op.owner));
+    const owners58 = new Set(plan58.operations.map((op) => op.owner));
+
+    const sdkOwners57 = [...owners57].filter((o) => o.startsWith("sdk-57:"));
+    const sdkOwners58 = [...owners58].filter((o) => o.startsWith("sdk-58:"));
+    expect(sdkOwners57.length).toBeGreaterThan(0);
+    expect(sdkOwners58.length).toBeGreaterThan(0);
+    expect(sdkOwners57[0]).not.toBe(sdkOwners58[0]);
   });
 });

@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { manifestFileName, productName } from "@expojet/brand";
+import { supportedSdks } from "@expojet/schemas";
 import type { ProjectContext } from "./project.js";
 
 export type CheckStatus = "pass" | "warning" | "fail";
@@ -57,7 +58,7 @@ export function runDoctorChecks(project: ProjectContext | null): CheckResult[] {
     },
     {
       name: "Expo SDK pack",
-      status: project.manifest.sdk === 57 ? "pass" : "fail",
+      status: (supportedSdks as readonly number[]).includes(project.manifest.sdk) ? "pass" : "fail",
       message: `SDK ${project.manifest.sdk}`,
     },
   );
@@ -108,7 +109,7 @@ export function runDoctorChecks(project: ProjectContext | null): CheckResult[] {
     checks.push({
       name: "Better Auth promotion",
       status: "warning",
-      message: "Experimental until the Expo SDK 57 physical-device gate passes",
+      message: `Experimental until the Expo SDK ${project.manifest.sdk} physical-device gate passes`,
     });
   }
   if (project.manifest.adapters.database === "postgres") {

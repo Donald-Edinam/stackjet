@@ -2,6 +2,7 @@ import type { Operation } from "@expojet/core";
 import type { CreateInput, IconLibrary } from "@expojet/schemas";
 import { z } from "zod";
 import type { Adapter } from "./contract.js";
+import { sdkVersion } from "./versions.js";
 
 const noOptions = z.object({}).strict();
 
@@ -177,7 +178,7 @@ export const lucideIconAdapter: Adapter = {
   version: "1.0.0",
   kind: "icons",
   displayName: "Lucide React Native",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -213,7 +214,7 @@ export const hugeiconsIconAdapter: Adapter = {
   version: "1.0.0",
   kind: "icons",
   displayName: "Hugeicons React Native",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -257,7 +258,7 @@ export const expoIconAdapter: Adapter = {
   version: "1.0.0",
   kind: "icons",
   displayName: "Expo Vector Icons",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -274,7 +275,7 @@ export const expoIconAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-font",
-        version: "~57.0.4",
+        version: sdkVersion(input.sdk, "expo-font"),
         kind: "dependencies",
         owner: this.id,
       },
@@ -282,7 +283,7 @@ export const expoIconAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-asset",
-        version: "~57.0.18",
+        version: sdkVersion(input.sdk, "expo-asset"),
         kind: "dependencies",
         owner: this.id,
       },

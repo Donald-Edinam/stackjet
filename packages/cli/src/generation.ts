@@ -15,8 +15,18 @@ import {
 } from "@expojet/adapters";
 import { commandName, manifestFileName, releaseVersion } from "@expojet/brand";
 import { executePlan, type GenerationPlan, type Operation } from "@expojet/core";
-import type { CreateInput } from "@expojet/schemas";
+import type { CreateInput, SupportedSdk } from "@expojet/schemas";
 import { sdk57Files, sdk57FilesSha256 } from "@expojet/sdk-57";
+import { sdk58Files, sdk58FilesSha256 } from "@expojet/sdk-58";
+
+function resolveSdkPack(sdk: SupportedSdk) {
+  switch (sdk) {
+    case 57:
+      return { files: sdk57Files, sha256: sdk57FilesSha256 };
+    case 58:
+      return { files: sdk58Files, sha256: sdk58FilesSha256 };
+  }
+}
 
 export function buildCreatePlan(input: CreateInput): GenerationPlan {
   const navigation = input.navigation ?? "router";
@@ -31,11 +41,13 @@ export function buildCreatePlan(input: CreateInput): GenerationPlan {
   const orm = input.orm ?? (database === "none" || backend === "convex" ? "none" : "drizzle");
   const normalizedInput: CreateInput = { ...input, navigation, backend, database, orm };
 
-  const owner = `sdk-57:${sdk57FilesSha256.slice(0, 12)}`;
+  const sdk = normalizedInput.sdk ?? 57;
+  const pack = resolveSdkPack(sdk);
+  const owner = `sdk-${sdk}:${pack.sha256.slice(0, 12)}`;
   const mobileRoot = normalizedInput.structure === "standalone" ? "" : "apps/mobile/";
   const isReactNav = normalizedInput.navigation === "react-navigation";
 
-  const operations: Operation[] = Object.entries(sdk57Files)
+  const operations: Operation[] = Object.entries(pack.files)
     .filter(([path]) => {
       if (
         path === "pnpm-lock.yaml" &&
@@ -102,8 +114,8 @@ export function buildCreatePlan(input: CreateInput): GenerationPlan {
         {
           $schema: "https://expojet.dev/schemas/project.schema.json",
           generatorVersion: releaseVersion,
-          sdk: 57,
-          sdkPackSha256: sdk57FilesSha256,
+          sdk,
+          sdkPackSha256: pack.sha256,
           structure: normalizedInput.structure,
           packageManager: normalizedInput.packageManager,
           adapters: {

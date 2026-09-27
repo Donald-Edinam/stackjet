@@ -3,7 +3,7 @@ import { packageManagers } from "./create-input.js";
 
 export const sdkPackManifestSchema = z.object({
   $schema: z.string().optional(),
-  sdk: z.literal(57),
+  sdk: z.union([z.literal(57), z.literal(58)]),
   status: z.enum(["experimental", "stable"]),
   source: z.object({
     kind: z.literal("create-expo-app"),

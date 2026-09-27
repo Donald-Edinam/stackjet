@@ -231,7 +231,7 @@ export const themeAdapter: Adapter = {
   version: "1.0.0",
   kind: "feature",
   displayName: "Theme Engine & Dark Mode",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input): Operation[] {
     const root = input.structure === "standalone" ? "" : "apps/mobile/";

@@ -13,3 +13,4 @@ export * from "./platform.js";
 export * from "./state.js";
 export * from "./style.js";
 export * from "./theme.js";
+export * from "./versions.js";

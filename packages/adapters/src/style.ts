@@ -318,7 +318,7 @@ export const stylesheetAdapter: Adapter = {
   version: "1.0.0",
   kind: "style",
   displayName: "React Native StyleSheet",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const root = input.structure === "standalone" ? "" : "apps/mobile/";
@@ -344,7 +344,7 @@ export const uniwindAdapter: Adapter = {
   version: "1.0.0",
   kind: "style",
   displayName: "Uniwind",
-  capabilities: () => ({ sdk: [57], requires: ["metro"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["metro"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const workspace = input.structure === "standalone" ? "." : "apps/mobile";
@@ -411,7 +411,7 @@ export const nativewindAdapter: Adapter = {
   version: "1.0.0",
   kind: "style",
   displayName: "NativeWind",
-  capabilities: () => ({ sdk: [57], requires: ["metro"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["metro"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const workspace = input.structure === "standalone" ? "." : "apps/mobile";
@@ -484,7 +484,7 @@ export const unistylesAdapter: Adapter = {
   version: "1.0.0",
   kind: "style",
   displayName: "Unistyles",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const workspace = input.structure === "standalone" ? "." : "apps/mobile";

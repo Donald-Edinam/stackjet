@@ -1,0 +1,23 @@
+{
+  "$schema": "../../schemas/sdk-pack.schema.json",
+  "sdk": 58,
+  "status": "stable",
+  "source": {
+    "kind": "create-expo-app",
+    "template": "default@sdk-58",
+    "syncedAt": "2026-09-27T00:00:00.000Z"
+  },
+  "supportedPackageManagers": [
+    "pnpm",
+    "npm",
+    "bun"
+  ],
+  "newArchitecture": true,
+  "checks": [
+    "typecheck",
+    "test",
+    "expo-doctor",
+    "expo-export"
+  ],
+  "filesSha256": "bb9085323b40951f4e9bd85860d8155d19ac6528d2898a007bcd2acf64132378"
+}

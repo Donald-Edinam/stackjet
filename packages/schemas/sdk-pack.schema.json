@@ -15,7 +15,7 @@
   ],
   "properties": {
     "$schema": { "type": "string" },
-    "sdk": { "const": 57 },
+    "sdk": { "enum": [57, 58] },
     "status": { "enum": ["experimental", "stable"] },
     "source": {
       "type": "object",

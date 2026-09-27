@@ -1,6 +1,6 @@
 # Expojet Expo app
 
-This project was generated from the checksum-verified Expo SDK 57 base pack.
+This project was generated from the checksum-verified Expo SDK 58 base pack.
 
 ## Run
 

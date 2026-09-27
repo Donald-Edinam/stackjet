@@ -276,7 +276,7 @@ async function promptCreate(
       message: "Expo SDK version",
       options: [
         { value: 57, label: "SDK 57 (stable)" },
-        { value: 58, label: "SDK 58 (latest)" },
+        { value: 58, label: "SDK 58 (preview)" },
       ],
       initialValue: 57,
     });

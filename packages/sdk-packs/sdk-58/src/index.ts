@@ -6,7 +6,7 @@ export { sdk58Files, sdk58FilesSha256 } from "./template.generated.js";
 export const sdk58Manifest = {
   $schema: "../../schemas/sdk-pack.schema.json",
   sdk: 58 as const,
-  status: "stable" as const,
+  status: "experimental" as const,
   source: {
     kind: "create-expo-app" as const,
     template: "default@sdk-58",

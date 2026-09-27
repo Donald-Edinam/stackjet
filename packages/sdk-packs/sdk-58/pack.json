@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/sdk-pack.schema.json",
   "sdk": 58,
-  "status": "stable",
+  "status": "experimental",
   "source": {
     "kind": "create-expo-app",
     "template": "default@sdk-58",

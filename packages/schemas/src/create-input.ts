@@ -136,7 +136,7 @@ export const createInputSchema = createInputObjectSchema
       context.addIssue({
         code: "custom",
         path: ["auth"],
-        message: "Better Auth requires the monorepo structure in the SDK 57 pack",
+        message: `Better Auth requires the monorepo structure in the SDK ${input.sdk} pack`,
       });
     }
     if (
@@ -180,7 +180,7 @@ export const createInputSchema = createInputObjectSchema
         code: "custom",
         path: ["navigation"],
         message:
-          "Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK 57",
+          `Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK ${input.sdk}`,
       });
     }
   });

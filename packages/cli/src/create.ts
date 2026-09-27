@@ -23,8 +23,10 @@ import {
   packageManagers,
   type SocialProvider,
   type StateAdapter,
+  type SupportedSdk,
   socialProviders,
   styleAdapters,
+  supportedSdks,
 } from "@expojet/schemas";
 import { ZodError } from "zod";
 import { renderHeroBanner } from "./banner.js";
@@ -36,6 +38,7 @@ import type { CliIo } from "./io.js";
 export interface CreateFlags {
   config?: string;
   destination?: string;
+  sdk?: string;
   structure?: string;
   packageManager?: string;
   navigation?: string;
@@ -200,7 +203,7 @@ export function normalizeNonInteractiveCreate(
     install: flags.install ?? effectiveConfig.install ?? true,
     git: flags.git ?? effectiveConfig.git ?? true,
     typescript: flags.typescript ?? effectiveConfig.typescript ?? true,
-    sdk: 57,
+    sdk: flags.sdk ? Number(flags.sdk) : effectiveConfig.sdk ?? 57,
   });
 }
 
@@ -260,6 +263,25 @@ async function promptCreate(
       );
     }
     activeConfig = { ...found.config, ...activeConfig };
+  }
+
+  let sdk: SupportedSdk;
+  const sdkFlag = flags.sdk ? Number(flags.sdk) : undefined;
+  if (sdkFlag !== undefined && supportedSdks.includes(sdkFlag as SupportedSdk)) {
+    sdk = sdkFlag as SupportedSdk;
+  } else if (activeConfig.sdk !== undefined) {
+    sdk = activeConfig.sdk as SupportedSdk;
+  } else {
+    const sdkChoice = await p.select({
+      message: "Expo SDK version",
+      options: [
+        { value: 57, label: "SDK 57 (stable)" },
+        { value: 58, label: "SDK 58 (latest)" },
+      ],
+      initialValue: 57,
+    });
+    cancelled(sdkChoice);
+    sdk = sdkChoice as SupportedSdk;
   }
 
   const projectName =
@@ -621,7 +643,7 @@ async function promptCreate(
     install: true,
     git: true,
     typescript,
-    sdk: 57,
+    sdk,
   });
   if (!draftValidation.success) throw draftValidation.error;
 
@@ -686,12 +708,12 @@ async function promptCreate(
     install,
     git,
     typescript,
-    sdk: 57,
+    sdk,
   });
   const backendLabel = backend !== "none" ? `, ${backend} backend` : "";
   const monitoringLabel = monitoring !== "none" ? `, ${monitoring} monitoring` : "";
   const confirmed = await p.confirm({
-    message: `Plan ${input.projectName} with Expo SDK 57${backendLabel}, ${input.auth}, ${input.style}, ${input.database} database, and ${input.orm} ORM${monitoringLabel}?`,
+    message: `Plan ${input.projectName} with Expo SDK ${input.sdk}${backendLabel}, ${input.auth}, ${input.style}, ${input.database} database, and ${input.orm} ORM${monitoringLabel}?`,
     initialValue: true,
   });
   cancelled(confirmed);
@@ -763,7 +785,7 @@ function printResult(
   if (input.eas) io.stdout("  EAS Build: configured (development, preview, production profiles)");
   io.stdout(`  Files: ${result.files.length}`);
   io.stdout(
-    `  Foundation: Expo SDK 57, ${
+    `  Foundation: Expo SDK ${input.sdk}, ${
       input.navigation === "router" ? "Expo Router" : "React Navigation"
     }, strict TypeScript, tests`,
   );

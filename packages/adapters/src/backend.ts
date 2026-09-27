@@ -1269,7 +1269,7 @@ export const honoBackendAdapter: Adapter = {
   version: "1.0.0",
   kind: "api",
   displayName: "Hono Platform",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") return [];
@@ -1362,7 +1362,7 @@ export const expressBackendAdapter: Adapter = {
   version: "1.0.0",
   kind: "api",
   displayName: "Express REST API",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") return [];
@@ -1445,7 +1445,7 @@ export const nestjsBackendAdapter: Adapter = {
   version: "1.0.0",
   kind: "api",
   displayName: "NestJS Modular API",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") return [];
@@ -1552,7 +1552,7 @@ export const convexBackendAdapter: Adapter = {
   version: "1.0.0",
   kind: "api",
   displayName: "Convex Reactive Backend",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const isStandalone = input.structure === "standalone";
@@ -1693,7 +1693,7 @@ export const noneBackendAdapter: Adapter = {
   version: "1.0.0",
   kind: "api",
   displayName: "No Backend",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan() {
     return [];

@@ -246,7 +246,7 @@ export const noneAuthAdapter: Adapter = {
   version: "1.0.0",
   kind: "auth",
   displayName: "No authentication",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const { root } = location(input.structure);
@@ -274,7 +274,7 @@ export const clerkAuthAdapter: Adapter = {
   kind: "auth",
   displayName: "Clerk hosted authentication",
   capabilities: () => ({
-    sdk: [57],
+    sdk: [57, 58],
     requires: ["deep-links", "secure-store"],
     conflicts: ["auth:better-auth"],
   }),
@@ -394,7 +394,7 @@ export const betterAuthAdapter: Adapter = {
   kind: "auth",
   displayName: "Better Auth (experimental)",
   capabilities: () => ({
-    sdk: [57],
+    sdk: [57, 58],
     requires: ["monorepo", "secure-store"],
     conflicts: ["auth:clerk"],
   }),
@@ -766,7 +766,7 @@ export const supabaseAuthAdapter: Adapter = {
   version: "1.0.0",
   kind: "auth",
   displayName: "Supabase Auth",
-  capabilities: () => ({ sdk: [57], requires: ["secure-store"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["secure-store"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const { root, workspace } = location(input.structure);
@@ -848,7 +848,7 @@ export const firebaseAuthAdapter: Adapter = {
   version: "1.0.0",
   kind: "auth",
   displayName: "Firebase Auth",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const { root, workspace } = location(input.structure);
@@ -1274,7 +1274,7 @@ export const jwtAuthAdapter: Adapter = {
   kind: "auth",
   displayName: "Custom JWT authentication",
   capabilities: () => ({
-    sdk: [57],
+    sdk: [57, 58],
     requires: [],
     conflicts: [],
   }),

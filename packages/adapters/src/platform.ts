@@ -481,7 +481,7 @@ export const monorepoPlatformAdapter: Adapter = {
   version: "1.0.0",
   kind: "api",
   displayName: "Hono Platform",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const backend: BackendAdapter =

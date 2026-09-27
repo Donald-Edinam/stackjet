@@ -33,7 +33,7 @@ export const neonDatabaseAdapter: Adapter = {
   version: "1.0.0",
   kind: "database",
   displayName: "Neon Serverless Postgres",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") return [];
@@ -78,7 +78,7 @@ export const postgresDatabaseAdapter: Adapter = {
   version: "1.0.0",
   kind: "database",
   displayName: "Local PostgreSQL (Docker)",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") return [];
@@ -154,7 +154,7 @@ export const sqliteDatabaseAdapter: Adapter = {
   version: "1.0.0",
   kind: "database",
   displayName: "SQLite",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const isStandalone = input.structure === "standalone";
@@ -201,7 +201,7 @@ export const supabaseDatabaseAdapter: Adapter = {
   version: "1.0.0",
   kind: "database",
   displayName: "Supabase Postgres (Cloud)",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") {
@@ -291,7 +291,7 @@ export const noneDatabaseAdapter: Adapter = {
   version: "1.0.0",
   kind: "database",
   displayName: "No database",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan() {
     return [];

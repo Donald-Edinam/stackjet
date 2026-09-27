@@ -52,7 +52,7 @@ export const sentryMonitoringAdapter: Adapter = {
   version: "1.0.0",
   kind: "monitoring",
   displayName: "Sentry Error Monitoring",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -134,7 +134,7 @@ export const noneMonitoringAdapter: Adapter = {
   version: "1.0.0",
   kind: "monitoring",
   displayName: "None",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { root } = location(input.structure);

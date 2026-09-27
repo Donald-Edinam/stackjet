@@ -205,7 +205,7 @@ export const drizzleOrmAdapter: Adapter = {
   version: "1.0.0",
   kind: "orm",
   displayName: "Drizzle ORM",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: ["orm:prisma"] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: ["orm:prisma"] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") {
@@ -385,7 +385,7 @@ export const prismaOrmAdapter: Adapter = {
   version: "1.0.0",
   kind: "orm",
   displayName: "Prisma ORM",
-  capabilities: () => ({ sdk: [57], requires: ["monorepo"], conflicts: ["orm:drizzle"] }),
+  capabilities: () => ({ sdk: [57, 58], requires: ["monorepo"], conflicts: ["orm:drizzle"] }),
   optionsSchema: () => noOptions,
   plan(input) {
     if (input.structure === "standalone") return [];
@@ -449,7 +449,7 @@ export const noneOrmAdapter: Adapter = {
   version: "1.0.0",
   kind: "orm",
   displayName: "No ORM",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan() {
     return [];

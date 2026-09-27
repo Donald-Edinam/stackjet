@@ -177,7 +177,7 @@ export const lucideIconAdapter: Adapter = {
   version: "1.0.0",
   kind: "icons",
   displayName: "Lucide React Native",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -213,7 +213,7 @@ export const hugeiconsIconAdapter: Adapter = {
   version: "1.0.0",
   kind: "icons",
   displayName: "Hugeicons React Native",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -257,7 +257,7 @@ export const expoIconAdapter: Adapter = {
   version: "1.0.0",
   kind: "icons",
   displayName: "Expo Vector Icons",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);

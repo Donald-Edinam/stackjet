@@ -1094,7 +1094,7 @@ export const routerNavigationAdapter: Adapter = {
   version: "1.0.0",
   kind: "navigation",
   displayName: "Expo Router",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const { workspace, root } = location(input.structure);
@@ -1190,7 +1190,7 @@ export const reactNavigationAdapter: Adapter = {
   version: "1.0.0",
   kind: "navigation",
   displayName: "React Navigation",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input) {
     const { workspace, root } = location(input.structure);

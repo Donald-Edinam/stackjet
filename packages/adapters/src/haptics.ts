@@ -73,7 +73,7 @@ export const hapticsAdapter: Adapter = {
   version: "1.0.0",
   kind: "feature",
   displayName: "Tactile Haptics Engine",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -101,7 +101,7 @@ export const noHapticsAdapter: Adapter = {
   version: "1.0.0",
   kind: "feature",
   displayName: "None",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { root } = location(input.structure);

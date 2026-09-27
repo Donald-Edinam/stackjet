@@ -1197,7 +1197,7 @@ export const reactNavigationAdapter: Adapter = {
     const navType = input.navigationType ?? "tabs";
     if (input.liquidGlass && (navType === "tabs" || navType === "both")) {
       throw new Error(
-        "Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK 57",
+        `Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK ${input.sdk}`,
       );
     }
     const hasGesture = navType === "drawer" || navType === "both";

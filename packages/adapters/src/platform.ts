@@ -171,7 +171,8 @@ export default function RootLayout({ children }: PropsWithChildren) {
 }
 `;
 
-const webPage = `export default function HomePage() {
+function makeWebPage(sdk: number) {
+  return `export default function HomePage() {
   return (
     <main
       style={{
@@ -261,7 +262,7 @@ const webPage = `export default function HomePage() {
               borderRadius: "0.5rem",
             }}
           >
-            Expo SDK 57
+            Expo SDK ${sdk}
           </span>
         </div>
       </div>
@@ -269,6 +270,7 @@ const webPage = `export default function HomePage() {
   );
 }
 `;
+}
 
 const webPageTest = `import { describe, expect, it } from "vitest";
 import HomePage from "./page.js";
@@ -723,7 +725,7 @@ export const monorepoPlatformAdapter: Adapter = {
         {
           type: "write-file",
           path: "apps/web/app/page.tsx",
-          content: webPage,
+          content: makeWebPage(input.sdk),
           owner: this.id,
         },
         {

@@ -19,12 +19,12 @@ export function Community({ data }: { data: CommunityData }) {
     },
     {
       label: "Weekly downloads",
+      shortLabel: "Downloads",
       value: data.weeklyDownloads,
       icon: Calendar03Icon,
       href: `https://www.npmjs.com/package/${data.packageName}`,
     },
   ];
-
   return (
     <section className="site-community" aria-labelledby="community-title">
       <div className="site-community-heading">
@@ -35,16 +35,19 @@ export function Community({ data }: { data: CommunityData }) {
       </div>
       <p className="community-context">A small team. An open codebase. Room for your ideas.</p>
       <div className="site-metrics">
-        {metrics.map(({ label, value, icon, href }) => (
+        {metrics.map(({ label, shortLabel, value, icon, href }) => (
           <a href={href} target="_blank" rel="noreferrer" className="site-metric" key={label}>
             <span className="site-metric-label">
-              <HugeiconsIcon icon={icon} size={17} strokeWidth={1.8} aria-hidden="true" /> {label}
+              <HugeiconsIcon icon={icon} size={17} strokeWidth={1.8} aria-hidden="true" />{" "}
+              <span className="metric-label-full">{label}</span>
+              {shortLabel ? <span className="metric-label-short">{shortLabel}</span> : null}
             </span>
             <strong>{value === null ? "n/a" : value.toLocaleString()}</strong>
           </a>
         ))}
       </div>
-      <p className="community-context">
+      <p className="community-context community-activity">
+        <span className="activity-dot" aria-hidden="true" />
         {data.forks?.toLocaleString() ?? "—"} forks · {data.totalDownloads?.toLocaleString() ?? "—"}{" "}
         total npm downloads
       </p>

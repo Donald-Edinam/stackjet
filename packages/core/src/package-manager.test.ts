@@ -1,5 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { detectPackageManager, parseUserAgent } from "./package-manager.js";
+
+vi.mock("node:child_process", () => ({
+  execSync: vi.fn(() => {
+    throw new Error("package-manager binary unavailable");
+  }),
+}));
 
 describe("parseUserAgent", () => {
   it("correctly parses pnpm user agent and version", () => {
@@ -46,9 +52,8 @@ describe("detectPackageManager", () => {
     expect(detected).toEqual({ manager: "yarn", version: "1.22.22" });
   });
 
-  it("falls back to pnpm default if env is empty and no binaries match or defaults apply", () => {
-    // With dummy empty env
+  it("falls back to pnpm when no package-manager binaries are available", () => {
     const detected = detectPackageManager({});
-    expect(["pnpm", "bun", "yarn", "npm"]).toContain(detected.manager);
+    expect(detected).toEqual({ manager: "pnpm" });
   });
 });

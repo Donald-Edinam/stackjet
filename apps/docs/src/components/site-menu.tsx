@@ -7,9 +7,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { gitConfig } from "@/lib/shared";
+import { siteLinks } from "./site-links";
 import { ThemeToggle } from "./theme-toggle";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { siteLinks } from "./site-links";
 
 // Slide-in navigation sheet for compact viewports. Also carries the theme
 // switcher and GitHub link, which move out of the header on small screens.

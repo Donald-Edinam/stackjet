@@ -303,6 +303,9 @@
 .site-home .metric-label-short {
   display: none;
 }
+.site-home .metric-value-short {
+  display: none;
+}
 .site-home .site-metric:hover .site-metric-label svg {
   color: var(--expo-blue);
 }
@@ -403,14 +406,23 @@
   }
   .site-home .site-metric-label {
     font-size: 10px;
+    gap: 5px;
   }
   .site-home .site-metric-label svg {
-    display: none;
+    display: inline-flex;
+    width: 12px;
+    height: 12px;
   }
   .site-home .metric-label-full:has(+ .metric-label-short) {
     display: none;
   }
   .site-home .metric-label-short {
+    display: inline;
+  }
+  .site-home .metric-value-full {
+    display: none;
+  }
+  .site-home .metric-value-short {
     display: inline;
   }
   .site-home .site-person-list {
@@ -432,6 +444,11 @@
   }
   .home-actions {
     gap: 18px;
+  }
+}
+@media (max-width: 340px) {
+  .site-home .site-metric-label svg {
+    display: none;
   }
 }
 

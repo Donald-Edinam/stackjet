@@ -19,7 +19,7 @@ import {
 export const expojetManifestSchema = z.object({
   $schema: z.string().optional(),
   generatorVersion: z.string().min(1),
-  sdk: z.literal(57),
+  sdk: z.union([z.literal(57), z.literal(58)]),
   sdkPackSha256: z.string().regex(/^[a-f0-9]{64}$/),
   structure: z.enum(structures),
   packageManager: z.enum(packageManagers),

@@ -325,7 +325,7 @@ export const zustandStateAdapter: Adapter = {
   version: "1.0.0",
   kind: "state",
   displayName: "Zustand",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -359,7 +359,7 @@ export const mobxStateAdapter: Adapter = {
   version: "1.0.0",
   kind: "state",
   displayName: "MobX",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -407,7 +407,7 @@ export const noneStateAdapter: Adapter = {
   version: "1.0.0",
   kind: "state",
   displayName: "None",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(_input: CreateInput): Operation[] {
     return [];

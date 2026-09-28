@@ -182,7 +182,7 @@ export const posthogAnalyticsAdapter: Adapter = {
   version: "1.0.0",
   kind: "analytics",
   displayName: "PostHog Mobile Analytics",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -258,7 +258,7 @@ export const aptabaseAnalyticsAdapter: Adapter = {
   version: "1.0.0",
   kind: "analytics",
   displayName: "Aptabase Privacy Analytics",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -318,7 +318,7 @@ export const noneAnalyticsAdapter: Adapter = {
   version: "1.0.0",
   kind: "analytics",
   displayName: "None",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(_input: CreateInput): Operation[] {
     return [];

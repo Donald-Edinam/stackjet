@@ -12,6 +12,7 @@ export default defineConfig({
     "@expojet/core",
     "@expojet/schemas",
     "@expojet/sdk-57",
+    "@expojet/sdk-58",
   ],
   banner: { js: "#!/usr/bin/env node" },
 });

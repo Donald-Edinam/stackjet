@@ -21,6 +21,8 @@ export const socialProviders = ["google", "apple", "facebook", "microsoft"] as c
 export const styleAdapters = ["uniwind", "nativewind", "unistyles", "stylesheet"] as const;
 export const databaseAdapters = ["neon", "postgres", "sqlite", "supabase", "none"] as const;
 export const ormAdapters = ["drizzle", "prisma", "none"] as const;
+export const supportedSdks = [57, 58] as const;
+export type SupportedSdk = (typeof supportedSdks)[number];
 
 export type NavigationAdapter = (typeof navigationAdapters)[number];
 export type NavigationType = (typeof navigationTypes)[number];
@@ -72,7 +74,7 @@ const createInputObjectSchema = z.object({
   eas: z.boolean(),
   install: z.boolean().default(true),
   git: z.boolean().default(true),
-  sdk: z.literal(57).default(57),
+  sdk: z.union([z.literal(57), z.literal(58)]).default(57),
 });
 
 export const createInputSchema = createInputObjectSchema
@@ -134,7 +136,7 @@ export const createInputSchema = createInputObjectSchema
       context.addIssue({
         code: "custom",
         path: ["auth"],
-        message: "Better Auth requires the monorepo structure in the SDK 57 pack",
+        message: `Better Auth requires the monorepo structure in the SDK ${input.sdk} pack`,
       });
     }
     if (
@@ -177,8 +179,7 @@ export const createInputSchema = createInputObjectSchema
       context.addIssue({
         code: "custom",
         path: ["navigation"],
-        message:
-          "Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK 57",
+        message: `Native Liquid Glass tabs in Expo Go require the Expo Router navigation adapter on SDK ${input.sdk}`,
       });
     }
   });
@@ -188,7 +189,7 @@ export type CreateInput = Omit<z.infer<typeof createInputSchema>, "socialProvide
 };
 
 export const createConfigSchema = createInputObjectSchema
-  .omit({ destination: true, sdk: true })
+  .omit({ destination: true })
   .partial()
   .extend({ projectName: projectNameSchema.optional(), destination: z.string().min(1).optional() })
   .strict();

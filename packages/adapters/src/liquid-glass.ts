@@ -2,6 +2,7 @@ import type { Operation } from "@expojet/core";
 import type { CreateInput } from "@expojet/schemas";
 import { z } from "zod";
 import type { Adapter } from "./contract.js";
+import { sdkVersion } from "./versions.js";
 
 const noOptions = z.object({}).strict();
 
@@ -100,7 +101,7 @@ export const liquidGlassAdapter: Adapter = {
   version: "1.0.0",
   kind: "liquid-glass",
   displayName: "Liquid Glass Engine",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(input: CreateInput): Operation[] {
     const { workspace, root } = location(input.structure);
@@ -109,7 +110,7 @@ export const liquidGlassAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-glass-effect",
-        version: "~57.0.3",
+        version: sdkVersion(input.sdk, "expo-glass-effect"),
         kind: "dependencies",
         owner: this.id,
       },
@@ -117,7 +118,7 @@ export const liquidGlassAdapter: Adapter = {
         type: "add-dependency",
         workspace,
         name: "expo-blur",
-        version: "~57.0.2",
+        version: sdkVersion(input.sdk, "expo-blur"),
         kind: "dependencies",
         owner: this.id,
       },
@@ -136,7 +137,7 @@ export const noLiquidGlassAdapter: Adapter = {
   version: "1.0.0",
   kind: "liquid-glass",
   displayName: "None",
-  capabilities: () => ({ sdk: [57], requires: [], conflicts: [] }),
+  capabilities: () => ({ sdk: [57, 58], requires: [], conflicts: [] }),
   optionsSchema: () => noOptions,
   plan(_input: CreateInput): Operation[] {
     return [];

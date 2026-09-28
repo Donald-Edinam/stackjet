@@ -41,6 +41,7 @@
     "@expojet/core": "workspace:*",
     "@expojet/schemas": "workspace:*",
     "@expojet/sdk-57": "workspace:*",
+    "@expojet/sdk-58": "workspace:*",
     "@types/node": "latest",
     "tsup": "latest",
     "tsx": "latest",

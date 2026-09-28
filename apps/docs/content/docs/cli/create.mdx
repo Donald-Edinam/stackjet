@@ -7,7 +7,7 @@ description: Generate an Expo app or full-stack monorepo atomically.
 npx create-expojet@latest my-app
 ```
 
-The interactive flow selects the Expo SDK version, structure, package manager, authentication, styling, onboarding, and EAS profiles. Generation happens in a sibling staging directory and commits only after validation succeeds.
+The interactive flow selects the Expo SDK version (`57` stable by default or `58` beta), structure, package manager, authentication, styling, onboarding, and EAS profiles. The Stack Builder exposes the same SDK choice and includes it in both its preview and generated command. Generation happens in a sibling staging directory and commits only after validation succeeds.
 
 ```bash
 npx create-expojet@latest my-app --yes --sdk 58 --structure monorepo --auth clerk --style uniwind

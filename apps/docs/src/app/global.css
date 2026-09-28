@@ -821,6 +821,16 @@ html > body[data-scroll-locked] {
   background: var(--color-fd-primary);
   color: var(--color-fd-primary-foreground);
 }
+.builder-manager button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+.builder-sdk-note {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--color-fd-muted-foreground);
+  font: 500 0.62rem / 1.35 var(--font-mono);
+}
 .builder-chips {
   display: flex;
   flex-wrap: wrap;
@@ -974,6 +984,18 @@ html > body[data-scroll-locked] {
 }
 .builder-option-copy strong {
   font: 600 0.88rem / 1.1 var(--font-mono);
+}
+.builder-option-badge {
+  display: inline-flex;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid #f0d28a;
+  border-radius: 999px;
+  background: #fff7df;
+  color: #8b5e00;
+  font: 700 0.58rem / 1 var(--font-mono);
+  text-transform: uppercase;
+  vertical-align: middle;
 }
 .builder-option-copy small {
   color: var(--color-fd-muted-foreground);
@@ -1963,6 +1985,12 @@ html > body[data-scroll-locked] {
 
 .dark .builder-page .builder-options > button[data-active="true"] {
   background: #1a1d25;
+}
+
+.dark .builder-option-badge {
+  border-color: #624b1e;
+  background: #2b2415;
+  color: #f0c96a;
 }
 
 .dark .builder-page .builder-theme-icon .builder-icon-light {

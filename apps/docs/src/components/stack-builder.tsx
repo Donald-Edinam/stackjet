@@ -26,6 +26,7 @@ import { type PreviewFile, StackPreview } from "./stack-preview";
 type PackageManager = "pnpm" | "npm" | "bun" | "yarn";
 type CategoryKey = keyof Config | "features";
 type Config = {
+  sdk: 57 | 58;
   structure: "standalone" | "monorepo" | "monorepo-web";
   navigation: "router" | "react-navigation";
   navigationType: "tabs" | "drawer" | "both" | "stack";
@@ -46,9 +47,34 @@ type Config = {
   eas: boolean;
 };
 
-type Option = { value: string; label: string; description: string; icon?: string };
+type Option = {
+  value: string;
+  label: string;
+  description: string;
+  icon?: string;
+  badge?: string;
+};
 
 const groups: Array<{ key: keyof Config; label: string; options: Option[] }> = [
+  {
+    key: "sdk",
+    label: "Expo SDK",
+    options: [
+      {
+        value: "57",
+        label: "SDK 57",
+        description: "Stable Expo SDK",
+        icon: "expo",
+      },
+      {
+        value: "58",
+        label: "SDK 58",
+        description: "Preview the next Expo SDK",
+        icon: "expo",
+        badge: "Beta",
+      },
+    ],
+  },
   {
     key: "structure",
     label: "Project",
@@ -323,6 +349,7 @@ const socialOptions: Option[] = [
 ];
 
 const defaults: Config = {
+  sdk: 57,
   structure: "standalone",
   navigation: "router",
   navigationType: "tabs",
@@ -426,6 +453,7 @@ const categories: Array<{ key: CategoryKey; label: string }> = [
   { key: "features", label: "Features" },
 ];
 const requiredChoices = new Set<keyof Config>([
+  "sdk",
   "structure",
   "navigation",
   "navigationType",
@@ -551,8 +579,12 @@ export function StackBuilder() {
   const [preset, setPreset] = useState("");
 
   const select = (key: keyof Config, value: string) => {
+    if (key === "sdk" && value === "58" && packageManager === "yarn") {
+      setPackageManager("pnpm");
+    }
     setConfig((current) => {
-      const next = { ...current, [key]: value } as Config;
+      const selectedValue = key === "sdk" ? (Number(value) as 57 | 58) : value;
+      const next = { ...current, [key]: selectedValue } as Config;
       if (key === "structure") {
         if (value === "standalone") {
           next.backend = next.backend === "convex" ? "convex" : "none";
@@ -607,6 +639,7 @@ export function StackBuilder() {
     };
     const flags = [
       `--package-manager ${packageManager}`,
+      `--sdk ${config.sdk}`,
       `--structure ${config.structure}`,
       `--navigation ${config.navigation}`,
       `--navigation-type ${config.navigationType}`,
@@ -683,7 +716,7 @@ export function StackBuilder() {
       .replace(/[^a-z0-9._-]+/g, "-") || "my-expojet-app";
   const selected = groups
     .map((group) => {
-      const option = group.options.find((item) => item.value === config[group.key]);
+      const option = group.options.find((item) => item.value === String(config[group.key]));
       return option && option.value !== "none" ? { ...option, key: group.key } : null;
     })
     .filter((item): item is Option & { key: keyof Config } => item !== null);
@@ -743,7 +776,7 @@ export function StackBuilder() {
             eas: config.eas,
             install: true,
             git: true,
-            sdk: 57,
+            sdk: config.sdk,
           }),
           signal: controller.signal,
         });
@@ -774,7 +807,11 @@ export function StackBuilder() {
   function applyPreset(id: string) {
     const selectedPreset = presets.find((item) => item.id === id);
     if (!selectedPreset) return;
-    setConfig({ ...selectedPreset.config, socials: [...selectedPreset.config.socials] });
+    setConfig({
+      ...selectedPreset.config,
+      sdk: config.sdk,
+      socials: [...selectedPreset.config.socials],
+    });
     setPreset(id);
     setActiveGroup("structure");
   }
@@ -861,6 +898,12 @@ export function StackBuilder() {
                 <button
                   type="button"
                   key={manager}
+                  disabled={config.sdk === 58 && manager === "yarn"}
+                  title={
+                    config.sdk === 58 && manager === "yarn"
+                      ? "Not supported by the SDK 58 beta pack"
+                      : undefined
+                  }
                   data-active={packageManager === manager}
                   onClick={() => setPackageManager(manager)}
                 >
@@ -869,6 +912,9 @@ export function StackBuilder() {
                 </button>
               ))}
             </fieldset>
+            {config.sdk === 58 ? (
+              <small className="builder-sdk-note">SDK 58 beta supports pnpm, npm, and bun.</small>
+            ) : null}
             <div className="builder-selected-heading">
               <span>Selected stack</span>
               <b>
@@ -1065,8 +1111,8 @@ export function StackBuilder() {
                                     type="button"
                                     key={option.value}
                                     disabled={unavailableReason !== undefined}
-                                    data-active={config[group.key] === option.value}
-                                    aria-pressed={config[group.key] === option.value}
+                                    data-active={String(config[group.key]) === option.value}
+                                    aria-pressed={String(config[group.key]) === option.value}
                                     onClick={() => select(group.key, option.value)}
                                   >
                                     {option.icon ? (
@@ -1077,7 +1123,14 @@ export function StackBuilder() {
                                       </span>
                                     )}
                                     <span className="builder-option-copy">
-                                      <strong>{option.label}</strong>
+                                      <strong>
+                                        {option.label}
+                                        {option.badge ? (
+                                          <span className="builder-option-badge">
+                                            {option.badge}
+                                          </span>
+                                        ) : null}
+                                      </strong>
                                       <small>{option.description}</small>
                                       {unavailableReason ? (
                                         <small className="builder-option-reason">
@@ -1088,7 +1141,7 @@ export function StackBuilder() {
                                     <i>
                                       <HugeiconsIcon
                                         icon={
-                                          config[group.key] === option.value
+                                          String(config[group.key]) === option.value
                                             ? Tick02Icon
                                             : PlusSignIcon
                                         }

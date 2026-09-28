@@ -387,7 +387,7 @@
   }
   .site-home .site-metric {
     min-height: 0;
-    padding: 10px 10px 9px;
+    padding: 10px 8px 9px;
     gap: 4px;
   }
   .site-home .site-metric:nth-child(n + 3) {
@@ -397,7 +397,9 @@
     grid-column: auto;
   }
   .site-home .site-metric strong {
-    font-size: 22px;
+    font-size: clamp(17px, 5.5vw, 22px);
+    letter-spacing: -0.04em;
+    white-space: nowrap;
   }
   .site-home .site-metric-label {
     font-size: 10px;

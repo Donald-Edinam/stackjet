@@ -21,8 +21,8 @@
     "smoke:pack": "node scripts/smoke-pack.mjs",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "architecture": "node scripts/architecture-harness.mjs",
-    "architecture:check": "node scripts/architecture-harness.mjs --check"
+    "architecture": "pnpm --filter create-expojet build && node scripts/architecture-harness.mjs",
+    "architecture:check": "pnpm --filter create-expojet build && node scripts/architecture-harness.mjs --check"
   },
   "devDependencies": {
     "@biomejs/biome": "latest",

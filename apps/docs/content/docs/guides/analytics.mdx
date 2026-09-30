@@ -40,7 +40,8 @@ npx create-expojet@latest my-app --analytics none
 
 ## Architecture & Secret Boundary Isolation
 
-Expojet strictly enforces the **Mobile Secret Boundary** invariant. Mobile application bundles are public client code and must never contain server secret keys.
+Mobile application bundles are public client code and must never contain server credentials.
+Use public ingestion keys for analytics and keep server administration tokens in the API workspace.
 
 All analytics keys in Expojet are scoped to the public environment:
 
@@ -58,7 +59,9 @@ EXPO_PUBLIC_APTABASE_HOST=https://api.aptabase.com
 ```
 
 > [!CAUTION]
-> Never store server tokens or un-prefixed keys (such as `POSTHOG_SECRET` or `APTABASE_KEY`) in your mobile directory. Expojet's `doctor` command automatically scans for leaked secrets and fails verification if detected.
+> Keep `POSTHOG_SECRET`, `POSTHOG_API_KEY`, and `APTABASE_SECRET` out of the mobile directory,
+> including names starting with `EXPO_PUBLIC_`. Doctor searches source and JSON files
+> for known secret names. It cannot recognize renamed credentials or literal secret values.
 
 ---
 
@@ -140,4 +143,4 @@ node packages/cli/dist/cli.js doctor
 Checks executed:
 - **Mobile analytics module**: Validates presence of `src/analytics/index.ts`.
 - **Mobile analytics provider**: Validates presence of `src/analytics/provider.tsx`.
-- **Mobile secret boundary**: Confirms no server secret tokens are leaked into the mobile workspace.
+- **Mobile secret boundary**: Flags known server variable names in mobile source and JSON files.

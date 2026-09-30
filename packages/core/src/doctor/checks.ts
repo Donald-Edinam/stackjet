@@ -90,8 +90,8 @@ export function runDoctorChecks(project: ProjectContext | null): CheckResult[] {
       name: "Mobile secret boundary",
       status: leaked ? "fail" : "pass",
       message: leaked
-        ? "Server environment names found in mobile files"
-        : "No server environment names found in mobile files",
+        ? "Known server environment names found in mobile source or JSON files"
+        : "No known server environment names found in scanned source or JSON files. Environment files and secret values are not checked.",
     });
   }
   if (project.manifest.adapters.auth === "better-auth") {

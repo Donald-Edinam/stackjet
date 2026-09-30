@@ -10,3 +10,9 @@ npx expojet doctor
 Doctor checks Node.js, the Expojet manifest, SDK compatibility, lockfiles, workspaces, and server-secret leakage into mobile files. Better Auth receives an experimental warning until its physical-device gate passes.
 
 Use `npx expojet info` for a copyable, secret-free support report. Doctor never edits files.
+
+The mobile secret check searches TypeScript, JavaScript, and JSON files for known
+server variable names. Build output and dependencies are skipped. An `EXPO_PUBLIC_` prefix
+exposes a value to the app and must never be used for server credentials. Public client URLs and
+analytics ingestion keys may use that prefix. The scan cannot detect a secret stored
+under another name or pasted as a literal value, and it does not inspect environment files. Review mobile configuration before shipping.

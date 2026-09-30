@@ -183,6 +183,7 @@ if (rejected.length > 0) {
     console.error(`  ${name}`);
     for (const issue of issues) console.error(`      ${issue}`);
   }
+  process.exit(1);
 }
 
 if (checkOnly) {
@@ -207,8 +208,6 @@ if (checkOnly) {
       });
     }
   }
-
-  if (rejected.length > 0) drift.push({ name: "(schema rejected a scenario)", kind: "added" });
 
   if (drift.length === 0) {
     console.log(
@@ -235,6 +234,5 @@ if (checkOnly) {
 mkdirSync(dirname(baselinePath), { recursive: true });
 writeFileSync(baselinePath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 console.log(
-  `wrote ${Object.keys(results).length} scenarios to ${baselinePath.replace(`${root}/`, "")}` +
-    (rejected.length ? ` (${rejected.length} rejected)` : ""),
+  `wrote ${Object.keys(results).length} scenarios to ${baselinePath.replace(`${root}/`, "")}`,
 );

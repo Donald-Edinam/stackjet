@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { manifestFileName, productName } from "@expojet/brand";
 import { supportedSdks } from "@expojet/schemas";

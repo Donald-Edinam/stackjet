@@ -2,8 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ProjectContext } from "../project.js";
 
-// Only `EXPO_PUBLIC_` names are safe to inline into a bundle, so everything else is classified as
-// a server secret.
+// This classification records bundle exposure. A public prefix does not make a credential safe.
 export interface EnvCheckResult {
   workspace: string;
   variable: string;

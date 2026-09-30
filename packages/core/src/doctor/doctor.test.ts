@@ -29,17 +29,17 @@ describe("MOBILE_SECRET_PATTERN", () => {
     "POSTHOG_API_KEY",
     "APTABASE_SECRET",
     "SENTRY_AUTH_TOKEN",
-  ])("allows EXPO_PUBLIC_-prefixed %s", (name) => {
-    expect(MOBILE_SECRET_PATTERN.test(`const key = process.env.EXPO_PUBLIC_${name};`)).toBe(false);
+  ])("flags EXPO_PUBLIC_-prefixed %s", (name) => {
+    expect(MOBILE_SECRET_PATTERN.test(`const key = process.env.EXPO_PUBLIC_${name};`)).toBe(true);
   });
 
-  it("still flags EXPO_PUBLIC_DIRECT_DATABASE_URL, which embeds a bare DATABASE_URL", () => {
+  it("flags a publicly prefixed direct database URL", () => {
     expect(MOBILE_SECRET_PATTERN.test("process.env.EXPO_PUBLIC_DIRECT_DATABASE_URL")).toBe(true);
   });
 
-  it("flags an unprefixed DATABASE_URL that is not a substring of a prefixed one", () => {
+  it("flags database URLs with or without a public prefix", () => {
     expect(MOBILE_SECRET_PATTERN.test("process.env.DATABASE_URL")).toBe(true);
-    expect(MOBILE_SECRET_PATTERN.test("process.env.EXPO_PUBLIC_DATABASE_URL")).toBe(false);
+    expect(MOBILE_SECRET_PATTERN.test("process.env.EXPO_PUBLIC_DATABASE_URL")).toBe(true);
   });
 
   it("has no global flag, so repeated tests are not stateful", () => {

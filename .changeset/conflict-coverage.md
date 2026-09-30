@@ -1,5 +1,6 @@
 ---
 "@expojet/core": patch
+"create-expojet": patch
 ---
 
 Detect conflicting JSON patch and composition operations

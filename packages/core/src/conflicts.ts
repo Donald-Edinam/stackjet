@@ -86,7 +86,7 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
         break;
       case "add-dependency":
         claim(
-          `dependency:${normalize(operation.workspace)}:${operation.name}`,
+          `dependency:${join(operation.workspace, ".")}:${operation.name}`,
           operation.owner,
           { version: operation.version, kind: operation.kind },
           `Dependency ${operation.name}`,
@@ -97,7 +97,7 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
         break;
       case "add-env":
         claim(
-          `env:${normalize(operation.workspace)}:${operation.variable.name}`,
+          `env:${join(operation.workspace, ".")}:${operation.variable.name}`,
           operation.owner,
           operation.variable.classification,
           `Environment variable ${operation.variable.name}`,
@@ -105,7 +105,7 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
         break;
       case "add-script":
         claim(
-          `script:${normalize(operation.workspace)}:${operation.name}`,
+          `script:${join(operation.workspace, ".")}:${operation.name}`,
           operation.owner,
           operation.command,
           `Script ${operation.name}`,
@@ -120,18 +120,18 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
         break;
       case "compose-metro":
         claim(
-          `metro:${normalize(operation.contribution.workspace ?? ".")}:${operation.contribution.id}`,
+          `metro:${join(operation.contribution.workspace ?? ".", ".")}:${operation.contribution.id}`,
           operation.owner,
           {
             ...operation.contribution,
-            workspace: normalize(operation.contribution.workspace ?? "."),
+            workspace: join(operation.contribution.workspace ?? ".", "."),
           },
           `Metro contribution ${operation.contribution.id}`,
         );
         break;
       case "compose-app-config":
         claim(
-          `app-plugin:${normalize(operation.contribution.workspace ?? ".")}:${operation.contribution.plugin}`,
+          `app-plugin:${join(operation.contribution.workspace ?? ".", ".")}:${operation.contribution.plugin}`,
           operation.owner,
           operation.contribution.options ?? null,
           `App config plugin ${operation.contribution.plugin}`,

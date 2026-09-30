@@ -50,9 +50,15 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
         if (previous.owner === owner) continue;
         const samePath =
           previous.edit.path.length === edit.path.length && isPrefix(previous.edit.path, edit.path);
-        if (samePath && sameValue(previous.edit.value, edit.value)) continue;
         const previousPath = affectedPath(previous.edit);
         const currentPath = affectedPath(edit);
+        // Repeating an array deletion removes another item after the first deletion shifts it.
+        if (
+          samePath &&
+          sameValue(previous.edit.value, edit.value) &&
+          currentPath.length === edit.path.length
+        )
+          continue;
         if (!isPrefix(previousPath, currentPath) && !isPrefix(currentPath, previousPath)) continue;
         conflicts.push({
           key: JSON.stringify([normalized, ...edit.path]),

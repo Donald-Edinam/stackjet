@@ -15,11 +15,6 @@ export function treeContains(directory: string, pattern: RegExp): boolean {
     if (skippedDirectories.has(entry.name)) return false;
     const path = join(directory, entry.name);
     if (entry.isDirectory()) return treeContains(path, pattern);
-    return (
-      (/\.(?:ts|tsx|js|jsx|json)$/.test(entry.name) ||
-        entry.name === ".env" ||
-        entry.name.startsWith(".env.")) &&
-      pattern.test(readFileSync(path, "utf8"))
-    );
+    return /\.(?:ts|tsx|js|jsx|json)$/.test(entry.name) && pattern.test(readFileSync(path, "utf8"));
   });
 }

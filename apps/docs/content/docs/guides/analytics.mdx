@@ -60,7 +60,7 @@ EXPO_PUBLIC_APTABASE_HOST=https://api.aptabase.com
 
 > [!CAUTION]
 > Keep `POSTHOG_SECRET`, `POSTHOG_API_KEY`, and `APTABASE_SECRET` out of the mobile directory,
-> including names starting with `EXPO_PUBLIC_`. Doctor searches source, JSON, and environment files
+> including names starting with `EXPO_PUBLIC_`. Doctor searches source and JSON files
 > for known secret names. It cannot recognize renamed credentials or literal secret values.
 
 ---
@@ -143,4 +143,4 @@ node packages/cli/dist/cli.js doctor
 Checks executed:
 - **Mobile analytics module**: Validates presence of `src/analytics/index.ts`.
 - **Mobile analytics provider**: Validates presence of `src/analytics/provider.tsx`.
-- **Mobile secret boundary**: Flags known server variable names in mobile source and environment files.
+- **Mobile secret boundary**: Flags known server variable names in mobile source and JSON files.

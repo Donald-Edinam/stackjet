@@ -11,8 +11,8 @@ Doctor checks Node.js, the Expojet manifest, SDK compatibility, lockfiles, works
 
 Use `npx expojet info` for a copyable, secret-free support report. Doctor never edits files.
 
-The mobile secret check searches TypeScript, JavaScript, JSON, `.env`, and `.env.*` files for known
+The mobile secret check searches TypeScript, JavaScript, and JSON files for known
 server variable names. Build output and dependencies are skipped. Adding `EXPO_PUBLIC_` to a
 server credential still fails this check because Expo exposes its value to the app. Public client
 URLs and analytics ingestion keys may use that prefix. The scan cannot detect a secret stored
-under another name or pasted as a literal value, so review mobile configuration before shipping.
+under another name or pasted as a literal value, and it does not inspect environment files. Review mobile configuration before shipping.

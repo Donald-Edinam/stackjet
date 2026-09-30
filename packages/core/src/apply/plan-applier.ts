@@ -1,3 +1,4 @@
+import { normalize } from "node:path";
 import { applyEdits, modify } from "jsonc-parser";
 import { composeAppPlugins, composeMetroConfig } from "../compose.js";
 import type {
@@ -138,7 +139,7 @@ export class PlanApplier {
   }
 
   private collect<T>(into: Map<string, T[]>, workspace: string | undefined, contribution: T) {
-    const key = workspace ?? ".";
+    const key = normalize(workspace ?? ".");
     into.set(key, [...(into.get(key) ?? []), contribution]);
   }
 

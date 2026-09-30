@@ -68,7 +68,11 @@ export async function promptCreate(
 
   const projectName = await resolveChoice(
     [projectNameArgument, activeConfig.projectName],
-    async () => String(await p.text({ message: "Project name", placeholder: "my-app" })),
+    async () => {
+      const answer = await p.text({ message: "Project name", placeholder: "my-app" });
+      cancelled(answer);
+      return String(answer);
+    },
   );
 
   // Fail before asking the remaining configuration questions when the name or
@@ -95,6 +99,7 @@ export async function promptCreate(
         message: `We detected ${detected.manager}${detected.version ? ` v${detected.version}` : ""} as your preferred package manager. Would you like to continue using it?`,
         initialValue: true,
       });
+      cancelled(keepDetected);
       if (keepDetected) return detected.manager as CreateInput["packageManager"];
       return (await p.select({
         message: "Which package manager would you like to use?",
@@ -178,14 +183,10 @@ export async function promptCreate(
       })) as CreateInput["state"],
   );
 
-  const liquidGlass = await resolveChoice([flags.liquidGlass, activeConfig.liquidGlass], async () =>
-    Boolean(
-      await p.confirm({
-        message: "Enable Liquid Glass UI engine? (Native iOS 26 + cross-platform blur)",
-        initialValue: true,
-      }),
-    ),
-  );
+  const liquidGlass = await confirm(flags.liquidGlass, activeConfig.liquidGlass, {
+    message: "Enable Liquid Glass UI engine? (Native iOS 26 + cross-platform blur)",
+    initialValue: true,
+  });
 
   const analytics = await resolveChoice(
     [flags.analytics, shorthand.analytics, activeConfig.analytics],
@@ -335,12 +336,14 @@ async function offerToSavePreset(input: CreateInput) {
     message: "Would you like to save this configuration as a preset for future use?",
     initialValue: false,
   });
+  cancelled(shouldSave);
   if (!shouldSave) return;
   const presetName = await p.text({
     message: "Preset name",
     placeholder: "my-stack",
     validate: (value) => (String(value).trim() ? undefined : "Preset name is required"),
   });
+  cancelled(presetName);
   const name = String(presetName).trim();
   if (!name) return;
   await savePreset({
@@ -392,6 +395,7 @@ async function resolvePreset(flags: CreateFlags): Promise<CreateConfig> {
     message: "Would you like to use a saved preset?",
     initialValue: false,
   });
+  cancelled(usePreset);
   if (!usePreset) return {};
   const selected = await p.select({
     message: "Select a saved preset",
@@ -406,6 +410,7 @@ async function resolvePreset(flags: CreateFlags): Promise<CreateConfig> {
       ].join(", "),
     })),
   });
+  cancelled(selected);
   return saved.find((preset) => preset.name === selected)?.config ?? {};
 }
 

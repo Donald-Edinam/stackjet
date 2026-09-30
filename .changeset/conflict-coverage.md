@@ -11,6 +11,9 @@ Detect conflicting JSON patch and composition operations
 could patch the same `package.json` or `app.json` pointer, or contribute a conflicting Metro
 wrapper, without `executePlan` raising `PlanConflictError`.
 
+Repeated array appends and deletions are rejected, even when their paths and values match,
+because each operation changes the array again.
+
 `patch-json` and `patch-jsonc` are now claimed per file *and* per JSON pointer, so two owners
 writing different pointers in the same file still compose while two owners writing the same
 pointer with different values are rejected. Metro contributions are claimed per workspace and

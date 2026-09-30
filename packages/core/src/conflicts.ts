@@ -12,8 +12,9 @@ function isPrefix(prefix: JsonEdit["path"], path: JsonEdit["path"]) {
 }
 
 function affectedPath(edit: JsonEdit) {
-  // Removing an array element shifts later indices, so sibling edits can also conflict.
-  return edit.value === undefined && typeof edit.path.at(-1) === "number"
+  // Deletions shift indices, and -1 appends another item even when repeated with the same value.
+  const index = edit.path.at(-1);
+  return typeof index === "number" && (edit.value === undefined || index === -1)
     ? edit.path.slice(0, -1)
     : edit.path;
 }
@@ -52,7 +53,7 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
           previous.edit.path.length === edit.path.length && isPrefix(previous.edit.path, edit.path);
         const previousPath = affectedPath(previous.edit);
         const currentPath = affectedPath(edit);
-        // Repeating an array deletion removes another item after the first deletion shifts it.
+        // Only assignments are idempotent. Repeated array appends and deletions change the array.
         if (
           samePath &&
           sameValue(previous.edit.value, edit.value) &&

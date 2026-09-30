@@ -1,4 +1,4 @@
-import { normalize } from "node:path";
+import { join } from "node:path";
 import { applyEdits, modify } from "jsonc-parser";
 import { composeAppPlugins, composeMetroConfig } from "../compose.js";
 import type {
@@ -139,7 +139,8 @@ export class PlanApplier {
   }
 
   private collect<T>(into: Map<string, T[]>, workspace: string | undefined, contribution: T) {
-    const key = normalize(workspace ?? ".");
+    // Joining "." also removes trailing separators, so "." and "./" compose together.
+    const key = join(workspace ?? ".", ".");
     into.set(key, [...(into.get(key) ?? []), contribution]);
   }
 

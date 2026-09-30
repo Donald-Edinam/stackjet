@@ -38,18 +38,11 @@ function upsert(presets: Preset[], preset: Preset): Preset[] {
   return presets.map((existing, at) => (at === index ? validated : existing));
 }
 
-function isMissingFile(error: unknown): boolean {
-  return (
-    typeof error === "object" && error !== null && (error as { code?: unknown }).code === "ENOENT"
-  );
-}
-
 export async function loadPresets(customDir?: string): Promise<Preset[]> {
   try {
     return parsePresets(await fs.readFile(getPresetsFilePath(customDir), "utf8"));
-  } catch (error) {
-    if (isMissingFile(error) || error instanceof SyntaxError) return [];
-    throw error;
+  } catch {
+    return [];
   }
 }
 

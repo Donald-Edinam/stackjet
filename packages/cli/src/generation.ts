@@ -1,3 +1,4 @@
+import { join, normalize } from "node:path";
 import {
   analyticsAdapter,
   authAdapter,
@@ -251,7 +252,19 @@ export function buildCreatePlan(input: CreateInput): GenerationPlan {
       owner: `${commandName}:eas`,
     });
   }
-  return { destination: normalizedInput.destination, operations };
+  const composedMetroFiles = new Set(
+    operations
+      .filter((operation) => operation.type === "compose-metro")
+      .map((operation) => join(operation.contribution.workspace ?? ".", "metro.config.js")),
+  );
+  // A composed Metro config owns the whole file. Omit only the SDK's default initializer.
+  const plannedOperations = operations.filter(
+    (operation) =>
+      operation.type !== "write-file" ||
+      operation.owner !== owner ||
+      !composedMetroFiles.has(normalize(operation.path)),
+  );
+  return { destination: normalizedInput.destination, operations: plannedOperations };
 }
 
 export function generateCreatePlan(input: CreateInput, dryRun: boolean) {

@@ -7,7 +7,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const baselinePath = join(root, "architecture.baseline.json");
@@ -26,7 +26,7 @@ if (!existsSync(generationEntry)) {
   process.exit(1);
 }
 
-const { buildCreatePlan, createInputSchema, materializePlan } = await import(generationEntry);
+const { buildCreatePlan, createInputSchema, materializePlan } = await import(pathToFileURL(generationEntry).href);
 
 /** Dimensions used by the selected scenarios below. */
 const styles = ["uniwind", "nativewind", "unistyles", "stylesheet"];

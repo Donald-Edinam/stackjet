@@ -4,7 +4,6 @@ import {
   type IconLibrary,
   type PackageManager,
   packageManagers,
-  type SocialProvider,
   type StateAdapter,
   type SupportedSdk,
   socialProviders,
@@ -165,5 +164,3 @@ export function ormOptions(context: "standalone" | "monorepo"): Choice<string>[]
     none: "None (Raw driver)",
   });
 }
-
-export const socialProviderValues = (value: string): SocialProvider => value as SocialProvider;

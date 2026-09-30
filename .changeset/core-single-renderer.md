@@ -1,5 +1,6 @@
 ---
 "@expojet/core": patch
+"create-expojet": patch
 ---
 
 Render a plan through one implementation, not two

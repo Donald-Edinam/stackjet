@@ -31,6 +31,10 @@ export interface PlanExecutionResult {
 }
 
 const diskTarget = (staging: string): PlanTarget => ({
+  read: (path) => {
+    const absolute = resolvePlanPath(staging, path);
+    return existsSync(absolute) ? readFileSync(absolute, "utf8") : undefined;
+  },
   write: (path, content) => {
     writeFileSync(resolvePlanPath(staging, path), content, "utf8");
   },
@@ -89,10 +93,7 @@ export function executePlan(
   mkdirSync(parent, { recursive: true });
   const staging = mkdtempSync(join(parent, prefix));
   try {
-    applyPlan(plan, diskTarget(staging), (path) => {
-      const absolute = resolvePlanPath(staging, path);
-      return existsSync(absolute) ? readFileSync(absolute, "utf8") : undefined;
-    });
+    applyPlan(plan, diskTarget(staging));
     const files = verifyRenderedTree(staging);
     if (options.dryRun) return { destination, files, committed: false };
     if (existsSync(destination)) {

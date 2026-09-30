@@ -1,6 +1,8 @@
+import { relative, resolve, sep } from "node:path";
 import { applyPlan, type PlanTarget } from "./apply/plan-applier.js";
 import { detectPlanConflicts } from "./conflicts.js";
 import { type GenerationPlan, PlanConflictError } from "./operations.js";
+import { resolvePlanPath } from "./plan-path.js";
 
 export interface MaterializedFile {
   path: string;
@@ -17,9 +19,13 @@ export function materializePlan(plan: GenerationPlan): MaterializedFile[] {
   if (conflicts.length > 0) throw new PlanConflictError(conflicts);
 
   const files = new Map<string, string>();
+  const root = resolve("/");
+  const filePath = (path: string) =>
+    relative(root, resolvePlanPath(root, path)).replaceAll(sep, "/");
   const target: PlanTarget = {
+    read: (path) => files.get(filePath(path)),
     write: (path, content) => {
-      files.set(path, content);
+      files.set(filePath(path), content);
     },
     prepare: () => {},
     copyTree: () => {
@@ -27,7 +33,7 @@ export function materializePlan(plan: GenerationPlan): MaterializedFile[] {
     },
   };
 
-  applyPlan(plan, target, (path) => files.get(path));
+  applyPlan(plan, target);
 
   return [...files.entries()]
     .sort(([left], [right]) => left.localeCompare(right))

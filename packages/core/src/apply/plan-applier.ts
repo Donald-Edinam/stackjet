@@ -12,6 +12,7 @@ import type {
 // Two targets exist and must agree exactly: the disk executor and the in-memory preview. Divergence
 // means the Stack Builder shows a project the generator would not produce.
 export interface PlanTarget {
+  read(path: string): string | undefined;
   write(path: string, content: string): void;
   prepare(path: string): void;
   copyTree(from: string, to: string): void;
@@ -47,30 +48,20 @@ function sortSection(section: Record<string, JsonValue>) {
 export class PlanApplier {
   private readonly metro = new Map<string, MetroContribution[]>();
   private readonly appPlugins = new Map<string, AppConfigContribution[]>();
-  private readonly texts = new Map<string, string>();
-
-  constructor(
-    private readonly target: PlanTarget,
-    /** Reads files the plan did not write itself, e.g. a `copy-tree` payload on disk. */
-    private readonly onRead: (path: string) => string | undefined = () => undefined,
-  ) {}
+  constructor(private readonly target: PlanTarget) {}
 
   private read(path: string): string {
-    const staged = this.texts.get(path);
-    if (staged !== undefined) return staged;
-    const fromTarget = this.onRead(path);
+    const fromTarget = this.target.read(path);
     if (fromTarget === undefined) throw new Error(`Plan references missing file: ${path}`);
-    this.texts.set(path, fromTarget);
     return fromTarget;
   }
 
   /** `add-env` may create `.env.example` rather than extend one. */
   private readOptional(path: string): string | undefined {
-    return this.texts.get(path) ?? this.onRead(path);
+    return this.target.read(path);
   }
 
   private write(path: string, content: string) {
-    this.texts.set(path, content);
     this.target.prepare(path);
     this.target.write(path, content);
   }
@@ -166,12 +157,8 @@ export class PlanApplier {
   }
 }
 
-export function applyPlan(
-  plan: GenerationPlan,
-  target: PlanTarget,
-  onRead: (path: string) => string | undefined = () => undefined,
-) {
-  const applier = new PlanApplier(target, onRead);
+export function applyPlan(plan: GenerationPlan, target: PlanTarget) {
+  const applier = new PlanApplier(target);
   for (const operation of plan.operations) applier.apply(operation);
   applier.finish();
 }

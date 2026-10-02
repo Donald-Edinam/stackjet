@@ -120,7 +120,7 @@ Keep package exports explicit. Do not reach into another package's private sourc
 - `apps/docs` is the Next.js documentation site and Stack Builder.
 - `fixtures` contains generated reference projects. Treat them as outputs, not alternate templates.
 - `docs/decisions` records durable architecture decisions and their reasons.
-- `scripts` contains SDK synchronization and public-package smoke checks.
+- `scripts` contains SDK synchronization, the architecture baseline harness, and public-package smoke checks.
 
 ## Local workflow
 
@@ -140,6 +140,7 @@ pnpm --filter @expojet/adapters test
 pnpm --filter create-expojet test
 pnpm sdk:check
 pnpm smoke:pack
+pnpm architecture:check
 pnpm --filter @expojet/docs typecheck
 ```
 
@@ -162,6 +163,8 @@ Use the smallest check that proves the changed behavior. A schema change usually
 Do not add tests unless the task asks for them. If a behavior change cannot be checked safely without a new test, explain why and ask before adding one. Running existing tests is fine.
 
 For generated output, inspect the files that users will receive. Check both the presence of required files and the absence of incompatible dependencies, stale routes, secret names, and unresolved placeholders. A successful TypeScript compile does not prove that the generated architecture is correct.
+
+`pnpm architecture:check` builds the CLI, then compares the generated files for 64 selected representative configurations against `architecture.baseline.json`. It does not cover every supported combination, interactive prompts, doctor checks, or runtime behavior. Run it for changes under `packages/core`, `packages/adapters`, or `packages/cli`, alongside focused checks for the behavior being changed. Review any intentional baseline change as a change to the files users receive.
 
 Do not rewrite fixtures or snapshots just to make a failure disappear. First confirm that the new output is intentional and that the generator can reproduce it.
 

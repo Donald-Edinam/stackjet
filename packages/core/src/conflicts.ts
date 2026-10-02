@@ -1,12 +1,36 @@
-import type { Operation, PlanConflict } from "./operations.js";
+import { join, normalize } from "node:path";
+import type { JsonEdit, Operation, PlanConflict } from "./operations.js";
 
 function sameValue(left: unknown, right: unknown) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function isPrefix(prefix: JsonEdit["path"], path: JsonEdit["path"]) {
+  return (
+    prefix.length <= path.length && prefix.every((part, at) => String(part) === String(path[at]))
+  );
+}
+
+function affectedPath(edit: JsonEdit) {
+  // Deletions shift indices, and -1 appends another item even when repeated with the same value.
+  const index = edit.path.at(-1);
+  return typeof index === "number" && (edit.value === undefined || index === -1)
+    ? edit.path.slice(0, -1)
+    : edit.path;
+}
+
 export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
   const claims = new Map<string, { owner: string; value: unknown }>();
+  const jsonClaims = new Map<string, { owner: string; edit: JsonEdit }[]>();
   const conflicts: PlanConflict[] = [];
+  const metroOwners = new Map<string, Set<string>>();
+  for (const operation of operations) {
+    if (operation.type !== "compose-metro") continue;
+    const file = join(operation.contribution.workspace ?? ".", "metro.config.js");
+    const owners = metroOwners.get(file) ?? new Set<string>();
+    owners.add(operation.owner);
+    metroOwners.set(file, owners);
+  }
 
   const claim = (key: string, owner: string, value: unknown, label: string) => {
     const existing = claims.get(key);
@@ -23,25 +47,75 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
     }
   };
 
+  /**
+   * Immediate JSON changes share ownership across patches, dependencies, and scripts.
+   * Replacing a parent object overlaps edits below it, even when the pointers differ.
+   */
+  const claimJsonEdits = (file: string, owner: string, edits: JsonEdit[]) => {
+    const normalized = normalize(file);
+    const existing = jsonClaims.get(normalized) ?? [];
+    for (const edit of edits) {
+      for (const previous of existing) {
+        if (previous.owner === owner) continue;
+        const samePath =
+          previous.edit.path.length === edit.path.length && isPrefix(previous.edit.path, edit.path);
+        const previousPath = affectedPath(previous.edit);
+        const currentPath = affectedPath(edit);
+        // Only assignments are idempotent. Repeated array appends and deletions change the array.
+        if (
+          samePath &&
+          sameValue(previous.edit.value, edit.value) &&
+          currentPath.length === edit.path.length
+        )
+          continue;
+        if (!isPrefix(previousPath, currentPath) && !isPrefix(currentPath, previousPath)) continue;
+        conflicts.push({
+          key: JSON.stringify([normalized, ...edit.path]),
+          message: `${normalized} has overlapping JSON changes from ${previous.owner} and ${owner}`,
+          owners: [previous.owner, owner],
+        });
+      }
+      existing.push({ owner, edit });
+    }
+    jsonClaims.set(normalized, existing);
+  };
+
   for (const operation of operations) {
     switch (operation.type) {
       case "write-file":
-        claim(`file:${operation.path}`, operation.owner, operation.content, operation.path);
+        // Metro composition replaces the whole file, so it cannot preserve another owner's write.
+        for (const owner of metroOwners.get(normalize(operation.path)) ?? []) {
+          if (owner === operation.owner) continue;
+          conflicts.push({
+            key: `file:${normalize(operation.path)}`,
+            message: `${operation.path} is written by ${operation.owner} and replaced by ${owner}`,
+            owners: [operation.owner, owner],
+          });
+        }
+        claim(
+          `file:${normalize(operation.path)}`,
+          operation.owner,
+          operation.content,
+          operation.path,
+        );
         break;
       case "copy-tree":
-        claim(`tree:${operation.to}`, operation.owner, operation.from, operation.to);
+        claim(`tree:${normalize(operation.to)}`, operation.owner, operation.from, operation.to);
         break;
       case "add-dependency":
         claim(
-          `dependency:${operation.workspace}:${operation.name}`,
+          `dependency:${join(operation.workspace, ".")}:${operation.name}`,
           operation.owner,
           { version: operation.version, kind: operation.kind },
           `Dependency ${operation.name}`,
         );
+        claimJsonEdits(join(operation.workspace, "package.json"), operation.owner, [
+          { path: [operation.kind, operation.name], value: operation.version },
+        ]);
         break;
       case "add-env":
         claim(
-          `env:${operation.workspace}:${operation.variable.name}`,
+          `env:${join(operation.workspace, ".")}:${operation.variable.name}`,
           operation.owner,
           operation.variable.classification,
           `Environment variable ${operation.variable.name}`,
@@ -49,13 +123,37 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
         break;
       case "add-script":
         claim(
-          `script:${operation.workspace}:${operation.name}`,
+          `script:${join(operation.workspace, ".")}:${operation.name}`,
           operation.owner,
           operation.command,
           `Script ${operation.name}`,
         );
+        claimJsonEdits(join(operation.workspace, "package.json"), operation.owner, [
+          { path: ["scripts", operation.name], value: operation.command },
+        ]);
         break;
-      default:
+      case "patch-json":
+      case "patch-jsonc":
+        claimJsonEdits(operation.path, operation.owner, operation.edits);
+        break;
+      case "compose-metro":
+        claim(
+          `metro:${join(operation.contribution.workspace ?? ".", ".")}:${operation.contribution.id}`,
+          operation.owner,
+          {
+            ...operation.contribution,
+            workspace: join(operation.contribution.workspace ?? ".", "."),
+          },
+          `Metro contribution ${operation.contribution.id}`,
+        );
+        break;
+      case "compose-app-config":
+        claim(
+          `app-plugin:${join(operation.contribution.workspace ?? ".", ".")}:${operation.contribution.plugin}`,
+          operation.owner,
+          operation.contribution.options ?? null,
+          `App config plugin ${operation.contribution.plugin}`,
+        );
         break;
     }
   }

@@ -1,6 +1,7 @@
 import {
   cpSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
@@ -8,7 +9,6 @@ import {
   renameSync,
   rmdirSync,
   rmSync,
-  statSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, join, parse } from "node:path";
@@ -42,7 +42,9 @@ const diskTarget = (staging: string): PlanTarget => ({
     mkdirSync(dirname(resolvePlanPath(staging, path)), { recursive: true });
   },
   copyTree: (from, to) => {
-    if (!statSync(from).isDirectory()) throw new Error(`${from} is not a directory`);
+    if (!lstatSync(from).isDirectory()) throw new Error(`${from} is not a directory`);
+    // Reject links before copying: later operations must never follow them outside staging.
+    listFiles(from);
     const target = resolvePlanPath(staging, to);
     mkdirSync(dirname(target), { recursive: true });
     cpSync(from, target, { recursive: true, errorOnExist: true });

@@ -1,5 +1,70 @@
 # create-expojet
 
+## 0.8.0
+
+### Minor Changes
+
+- ebf4b26: Add Expo SDK 58 as an optional choice when creating a project. SDK 57 remains the default.
+
+### Patch Changes
+
+- 90f1458: Detect conflicting JSON patch and composition operations
+
+  `detectPlanConflicts` claimed ownership for `write-file`, `copy-tree`, `add-dependency`,
+  `add-env` and `add-script`. `patch-json`, `patch-jsonc`, `compose-metro` and
+  `compose-app-config` fell through to `default: break` and were never claimed, so two adapters
+  could patch the same `package.json` or `app.json` pointer, or contribute a conflicting Metro
+  wrapper, without `executePlan` raising `PlanConflictError`.
+
+  Repeated array appends and deletions are rejected, even when their paths and values match,
+  because each operation changes the array again.
+
+  `patch-json` and `patch-jsonc` are now claimed per file *and* per JSON pointer, so two owners
+  writing different pointers in the same file still compose while two owners writing the same
+  pointer with different values are rejected. Metro contributions are claimed per workspace and
+  contribution id; app config plugins per workspace and plugin name.
+
+  Overlapping JSON writes are order-dependent because `jsonc-parser` applies each edit against
+  the current text, so rejecting them up front is the difference between a clear error and a plan
+  that renders differently depending on adapter ordering.
+- 3364df5: Reject symbolic links in copied trees before rendering. Later operations cannot follow a copied
+  link and overwrite files outside the staging directory.
+- 3105338: Use the same operation renderer for generated projects and in-memory previews. Read current file
+  contents after copied files and normalize equivalent paths so later edits preserve earlier changes.
+
+  Keep preset loading consistent between the sync and async APIs. Doctor now flags known server
+  credential names in mobile source and JSON files even with an EXPO_PUBLIC_ prefix.
+- bb3c389: Keep interactive shorthand flags consistent with `--yes` and stop creation when any prompt is
+  cancelled. Saved presets retain the selected social providers, analytics, SDK, and haptics.
+- bf166e0: Keep `--config` files and saved presets partial instead of filling in every default
+
+  `createConfigSchema` was derived from the defaulted create schema with `.partial()`. Zod wraps a
+  field in `ZodOptional` but leaves the inner default in place, so parsing a config file produced a
+  fully-populated configuration. Every omitted key then outranked both `--preset` and the CLI
+  fallbacks, and the interactive prompts stopped appearing whenever `--config` was used.
+
+  A one-line config file now behaves as documented:
+
+  ```json
+  { "structure": "monorepo" }
+  ```
+
+  ```console
+  # before: Database: none, ORM: none
+  # after:  Database: neon, ORM: drizzle
+  ```
+- 4ae2d39: Reject adapter-owned Metro files that composition would silently replace. Generation omits the
+  SDK's default Metro file when a composed config takes ownership, preserving the generated output.
+- 100a483: Preserve every create choice when saving a preset
+
+  `--save-preset` wrote a preset that omitted `analytics`, `haptics` and `sdk`, and the interactive
+  "save this configuration" prompt omitted `haptics` and `sdk`. Because the preset schema filled in
+  defaults for the missing keys, the file on disk claimed values the user never chose, and re-running
+  `expojet my-app --preset mypreset` generated a different stack than the one that was saved.
+
+  Both call sites now share one helper that serialises the whole resolved input, so the two paths
+  cannot drift again.
+
 ## 0.7.0
 
 ### Minor Changes

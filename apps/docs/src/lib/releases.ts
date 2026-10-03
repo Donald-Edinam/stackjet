@@ -4,6 +4,19 @@ import { releaseVersion } from "@expojet/brand";
 export const releases = [
   {
     version: releaseVersion,
+    date: "October 2, 2026",
+    summary: "Optional SDK 58 beta support and more reliable project generation.",
+    changes: [
+      "Added optional Expo SDK 58 beta support in the CLI and Stack Builder; SDK 57 remains the default.",
+      "Preserved SDK, analytics, haptics, and social-provider choices when saving and loading presets.",
+      "Fixed partial configuration precedence, interactive shorthand flags, and cancellation handling.",
+      "Unified generated-project and Stack Builder preview rendering, with 64 generated-output baseline scenarios.",
+      "Strengthened overlapping JSON and composition conflict checks, Metro ownership checks, and copied-tree symlink validation.",
+      "Improved doctor checks for known server credentials in mobile files. A shared composition-ownership edge case remains tracked in GitHub issue #84.",
+    ],
+  },
+  {
+    version: "0.7.0",
     date: "September 23, 2026",
     summary:
       "Tactile Haptics Engine, Sentry error monitoring in Stack Builder, and CLI diagnostics.",

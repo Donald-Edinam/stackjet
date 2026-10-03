@@ -1,5 +1,23 @@
 # expojet
 
+## 0.8.0
+
+### Minor Changes
+
+- Release the public alias alongside create-expojet 0.8.0.
+
+### Patch Changes
+
+- Updated dependencies [90f1458]
+- Updated dependencies [3364df5]
+- Updated dependencies [3105338]
+- Updated dependencies [bb3c389]
+- Updated dependencies [bf166e0]
+- Updated dependencies [4ae2d39]
+- Updated dependencies [ebf4b26]
+- Updated dependencies [100a483]
+  - create-expojet@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

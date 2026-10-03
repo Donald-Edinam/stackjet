@@ -23,6 +23,14 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
   const claims = new Map<string, { owner: string; value: unknown }>();
   const jsonClaims = new Map<string, { owner: string; edit: JsonEdit }[]>();
   const conflicts: PlanConflict[] = [];
+  const metroOwners = new Map<string, Set<string>>();
+  for (const operation of operations) {
+    if (operation.type !== "compose-metro") continue;
+    const file = join(operation.contribution.workspace ?? ".", "metro.config.js");
+    const owners = metroOwners.get(file) ?? new Set<string>();
+    owners.add(operation.owner);
+    metroOwners.set(file, owners);
+  }
 
   const claim = (key: string, owner: string, value: unknown, label: string) => {
     const existing = claims.get(key);
@@ -75,6 +83,15 @@ export function detectPlanConflicts(operations: Operation[]): PlanConflict[] {
   for (const operation of operations) {
     switch (operation.type) {
       case "write-file":
+        // Metro composition replaces the whole file, so it cannot preserve another owner's write.
+        for (const owner of metroOwners.get(normalize(operation.path)) ?? []) {
+          if (owner === operation.owner) continue;
+          conflicts.push({
+            key: `file:${normalize(operation.path)}`,
+            message: `${operation.path} is written by ${operation.owner} and replaced by ${owner}`,
+            owners: [operation.owner, owner],
+          });
+        }
         claim(
           `file:${normalize(operation.path)}`,
           operation.owner,
